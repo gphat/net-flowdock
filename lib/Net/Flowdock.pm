@@ -13,7 +13,7 @@ Net::Flowdock is a simple client for using the L<Flowdock API|https://www.flowdo
 
     use Net::Flowdock;
 
-    my $client = Net::Flowdock->new(key => 'find-your-own';
+    my $client = Net::Flowdock->new(key => 'find-your-own');
 
     $client->send({
         source => 'CPAN',
