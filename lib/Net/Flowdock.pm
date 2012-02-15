@@ -40,13 +40,23 @@ has '_client' => (
                 "authority": "GITHUB:gphat",
                 "version": "1.0",
                 "methods": {
-                    "post": {
-                        "path": "/v1/messages/influx/:key",
+                    "push_team_inbox": {
+                        "path": "/v2/messages/team_inbox/:key",
                         "required_params": [
                             "source", "from_address", "subject", "content"
                         ],
                         "optional_params": [
                             "from_name", "project", "format", "tags", "link"
+                        ],
+                        "method": "POST"
+                    },
+                    "push_chat": {
+                        "path": "/v2/messages/chat/:key",
+                        "required_params": [
+                            "content", "external_user_name"
+                        ],
+                        "optional_params": [
+                            "tags"
                         ],
                         "method": "POST"
                     }
@@ -97,7 +107,7 @@ has 'url' => (
     default => 'https://api.flowdock.com'
 );
 
-=method send ({ source => $source, from_address => $email })
+=method push_team_inbox ({ source => $source, from_address => $email })
 
 Required fields:
 
@@ -165,11 +175,11 @@ Example value: http://www.flowdock.com/
 
 =cut
 
-sub send {
+sub push_team_inbox {
     my $self = shift;
     my $args = shift;
     
-    return $self->_client->post(
+    return $self->_client->push_team_inbox(
         key => $self->key,
         source => $args->{source},
         from_address => $args->{from_address},
@@ -180,6 +190,40 @@ sub send {
         format => $args->{format},
         tags => $args->{tags},
         link => $args->{link}
+    );
+}
+
+=method push_chat ({ content => $content, external_user_name => $username })
+
+=over 4
+
+=item content
+
+Content of the message. Tags will be automatically parsed from the message content. Required.
+
+=item external_user_name
+
+Name of the "user" sending the message. Required.
+
+=item tags
+
+Tags of the message, separated by commas. Optional.
+
+Example value: cool,stuff
+
+=back
+
+=cut
+
+sub push_chat {
+    my $self = shift;
+    my $args = shift;
+
+    return $self->_client->push_chat(
+        key => $self->key,
+        content => $args->{content},
+        external_user_name => $args->{external_user_name},
+        tags => $args->{tags}
     );
 }
 
