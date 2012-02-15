@@ -48,7 +48,8 @@ has '_client' => (
                         "optional_params": [
                             "from_name", "project", "format", "tags", "link"
                         ],
-                        "method": "POST"
+                        "method": "POST",
+                        "authentication": false
                     },
                     "push_chat": {
                         "path": "/v2/messages/chat/:key",
@@ -58,13 +59,16 @@ has '_client' => (
                         "optional_params": [
                             "tags"
                         ],
-                        "method": "POST"
+                        "method": "POST",
+                        "authentication": false
                     }
                 }
             }',
             base_url => $self->url,
             trace => $self->debug
         );
+        $client->enable('Format::JSON');
+        $client->enable('Auth::Basic', username => $self->username, password => $self->password);
         return $client
     }
 );
