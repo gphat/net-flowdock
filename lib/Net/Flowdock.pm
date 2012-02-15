@@ -78,7 +78,18 @@ has '_client' => (
                         ],
                         "method": "POST",
                         "authentication": false
-                    }
+                    },
+                    "send_message": {
+                         "path": "/v2/flows/:organization/:flow/messages",
+                         "required_params": [
+                             "event", "content"
+                         ],
+                         "optional_params": [
+                             "tags"
+                         ],
+                         "method": "POST",
+                         "authentication": true
+                     }
                 }
             }',
             base_url => $self->url,
@@ -152,7 +163,7 @@ has 'username' => (
 
 =head1 AUTHENTICATED
 
-=method get_flow ({ organization => $org, flow => $flow })
+=method get_flow (organization => $org, flow => $flow)
 
 Get a single flow. Single flow information always includes user list of flow. Otherwise the data format is identical to the list.
 
@@ -162,10 +173,10 @@ sub get_flow {
     my $self = shift;
     my $args = shift;
     
-    return $self->_client->get_flow(
+    return $self->_client->get_flow({
         organization => $args->{organization},
         flow => $args->{flow}
-    );
+    });
 }
 
 =method get_flows
@@ -179,6 +190,64 @@ sub get_flows {
     my $args = shift;
     
     return $self->_client->get_flows;
+}
+
+=method send_message (organization => $org, flow => $flow, event => $event, content => $content, tags => $tags)
+
+Send a messge to a flow.
+
+=over 4
+
+=item event
+
+One of the valid Flowdock message events. Determines the type of message being sent to Flowdock. See Message Types section below. Required.
+
+=item content
+
+The actual message. The format of content depends on the event. Required. Types are message (normal chat), status, (status update), mail (team inbox).
+
+item tags
+
+List of tags to be added to the message. Can be either an array (JSON only) or a string with tags delimited with commas. User tags should start with '@'. Hashtags can optionally be prefixed with "#". Tags are case insensitive.
+
+=back
+
+Some examples:
+
+A status update:
+
+    $client->send_message({
+        organization => 'iinteractive',
+        flow => 'testing',
+        event => 'status',
+        content => 'Away for a bit',
+    });
+
+A message in chat:
+
+    $client->send_message({
+        organization => 'iinteractive',
+        flow => 'testing',
+        event => 'message',
+        content => 'I am a robot',
+        tags => 'foo, bar'
+    });
+    
+XXX Todo: mail
+
+=cut
+
+sub send_message {
+    my $self = shift;
+    my $args = shift;
+    
+    return $self->_client->send_message(
+        organization => $args->{organization},
+        flow => $args->{flow},
+        event => $args->{event},
+        content => $args->{content},
+        tags => $args->{tags}
+    );
 }
 
 =head1 ANONYMOUS
