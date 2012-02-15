@@ -15,7 +15,7 @@ Net::Flowdock is a simple client for using the L<Flowdock API|https://www.flowdo
 
     my $client = Net::Flowdock->new(key => 'find-your-own');
 
-    $client->send({
+    $client->push_team_inbox({
         source => 'CPAN',
         from_address => 'gphat@cpan.org',
         from_name => 'Cory Watson',
@@ -95,6 +95,17 @@ has 'key' => (
     required => 1
 );
 
+=attr password
+
+Set/Get the password for authenticated request.
+
+=cut
+
+has 'password' => (
+    is => 'rw',
+    isa => 'Str'
+);
+
 =attr url
 
 Set/Get the URL for Flowdock. Defaults to https://api.flowdock.com.
@@ -105,6 +116,17 @@ has 'url' => (
     is => 'rw',
     isa => 'Str',
     default => 'https://api.flowdock.com'
+);
+
+=attr username
+
+Set/Get the username for authenticated request.
+
+=cut
+
+has 'username' => (
+    is => 'rw',
+    isa => 'Str'
 );
 
 =method push_team_inbox ({ source => $source, from_address => $email })
