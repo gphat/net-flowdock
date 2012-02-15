@@ -49,6 +49,14 @@ has '_client' => (
                         "method": "GET",
                         "authentication": true
                     },
+                    "get_flow": {
+                        "path": "/v2/flows/:organization/:flow",
+                        "required_params": [
+                            "organization", "flow"
+                        ],
+                        "method": "GET",
+                        "authentication": true
+                    },
                     "push_team_inbox": {
                         "path": "/v2/messages/team_inbox/:key",
                         "required_params": [
@@ -143,6 +151,22 @@ has 'username' => (
 );
 
 =head1 AUTHENTICATED
+
+=method get_flow ({ organization => $org, flow => $flow })
+
+Get a single flow. Single flow information always includes user list of flow. Otherwise the data format is identical to the list.
+
+=cut
+
+sub get_flow {
+    my $self = shift;
+    my $args = shift;
+    
+    return $self->_client->get_flow(
+        organization => $args->{organization},
+        flow => $args->{flow}
+    );
+}
 
 =method get_flows
 
