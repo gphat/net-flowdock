@@ -15,6 +15,10 @@ Net::Flowdock is a simple client for using the L<Flowdock API|https://www.flowdo
 
     my $client = Net::Flowdock->new(key => 'find-your-own');
 
+    # Or, if you need to use authenticated methods
+    
+    my $client = Net::Flowdock->new(key => 'find-your-own', username => 'foo', password => 'bar');
+
     $client->push_team_inbox({
         source => 'CPAN',
         from_address => 'gphat@cpan.org',
@@ -40,6 +44,11 @@ has '_client' => (
                 "authority": "GITHUB:gphat",
                 "version": "1.0",
                 "methods": {
+                    "get_flows": {
+                        "path": "/v2/flows",
+                        "method": "GET",
+                        "authentication": true
+                    },
                     "push_team_inbox": {
                         "path": "/v2/messages/team_inbox/:key",
                         "required_params": [
@@ -132,6 +141,23 @@ has 'username' => (
     is => 'rw',
     isa => 'Str'
 );
+
+=head1 AUTHENTICATED
+
+=method get_flows
+
+Lists the flows that the authenticated user has access to.
+
+=cut
+
+sub get_flows {
+    my $self = shift;
+    my $args = shift;
+    
+    return $self->_client->get_flows;
+}
+
+=head1 ANONYMOUS
 
 =method push_team_inbox ({ source => $source, from_address => $email })
 
