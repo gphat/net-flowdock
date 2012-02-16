@@ -176,10 +176,10 @@ sub get_flow {
     my $self = shift;
     my $args = shift;
     
-    return $self->_client->get_flow({
+    return $self->_client->get_flow(
         organization => $args->{organization},
         flow => $args->{flow}
-    });
+    );
 }
 
 =method get_flows
