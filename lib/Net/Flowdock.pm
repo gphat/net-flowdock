@@ -126,7 +126,8 @@ To obtain the API Token go to Settings -> Team Inbox inside a flow.
 has 'key' => (
     is => 'rw',
     isa => 'Str',
-    required => 1
+    lazy => 1,
+    default => sub { die "This call requires a key to be set" },
 );
 
 =attr password
@@ -163,6 +164,20 @@ has 'username' => (
     isa => 'Str'
 );
 
+around BUILDARGS => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    my $params = $self->$orig(@_);
+    my $token = delete $params->{token};
+    if ($token) {
+        $params->{username} = $token;
+        $params->{password} = '';
+    }
+
+    return $params;
+};
+
 =head1 AUTHENTICATED
 
 =method get_flow (organization => $org, flow => $flow)
@@ -175,10 +190,10 @@ sub get_flow {
     my $self = shift;
     my $args = shift;
     
-    return $self->_client->get_flow({
+    return $self->_client->get_flow(
         organization => $args->{organization},
         flow => $args->{flow}
-    });
+    );
 }
 
 =method get_flows
