@@ -126,7 +126,8 @@ To obtain the API Token go to Settings -> Team Inbox inside a flow.
 has 'key' => (
     is => 'rw',
     isa => 'Str',
-    required => 1
+    lazy => 1,
+    default => sub { die "This call requires a key to be set" },
 );
 
 =attr password
