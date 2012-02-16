@@ -7,7 +7,9 @@ use Net::HTTP::Spore;
 
 =head1 DESCRIPTION
 
-Net::Flowdock is a simple client for using the L<Flowdock API|https://www.flowdock.com/help/api_documentation>.
+Net::Flowdock is a simple client for using the L<Flowdock API|https://www.flowdock.com/api>.
+It specifically speaks to the L<REST|https://www.flowdock.com/api/rest> and
+L<Push|https://www.flowdock.com/api/push> APIs.
 
 =head1 SYNOPSIS
 
