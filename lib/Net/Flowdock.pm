@@ -164,6 +164,20 @@ has 'username' => (
     isa => 'Str'
 );
 
+around BUILDARGS => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    my $params = $self->$orig(@_);
+    my $token = delete $params->{token};
+    if ($token) {
+        $params->{username} = $token;
+        $params->{password} = '';
+    }
+
+    return $params;
+};
+
 =head1 AUTHENTICATED
 
 =method get_flow (organization => $org, flow => $flow)
