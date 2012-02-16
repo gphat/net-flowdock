@@ -1,4 +1,7 @@
 {{$NEXT}}
+    * Fix get_flow (Jesse Luehrs)
+    * Make key lazy-required (Jesse Luehrs)
+    * Allow authenticating with just a token (Jesse Luehrs)
 
 0.02 Feb 15 2012
     * Support for Flowdock's new APIs
