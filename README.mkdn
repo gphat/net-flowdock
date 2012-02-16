@@ -4,7 +4,7 @@ Net::Flowdock - Flowdock API
 
 # VERSION
 
-version 0.01
+version 0.02
 
 # SYNOPSIS
 
@@ -12,7 +12,12 @@ version 0.01
 
     my $client = Net::Flowdock->new(key => 'find-your-own');
 
-    $client->send({
+    # Or, if you need to use authenticated methods
+    
+
+    my $client = Net::Flowdock->new(key => 'find-your-own', username => 'foo', password => 'bar');
+
+    $client->push_team_inbox({
         source => 'CPAN',
         from_address => 'gphat@cpan.org',
         from_name => 'Cory Watson',
@@ -25,7 +30,9 @@ version 0.01
 
 # DESCRIPTION
 
-Net::Flowdock is a simple client for using the [Flowdock API](https://www.flowdock.com/help/api_documentation).
+Net::Flowdock is a simple client for using the [Flowdock API](https://www.flowdock.com/api).
+It specifically speaks to the [REST](https://www.flowdock.com/api/rest) and
+[Push](https://www.flowdock.com/api/push) APIs.
 
 # ATTRIBUTES
 
@@ -39,13 +46,68 @@ Set/Get the key to use when connecting to Flowdock.
 
 To obtain the API Token go to Settings -> Team Inbox inside a flow. 
 
+## password
+
+Set/Get the password for authenticated request.
+
 ## url
 
 Set/Get the URL for Flowdock. Defaults to https://api.flowdock.com.
 
+## username
+
+Set/Get the username for authenticated request.
+
 # METHODS
 
-## send ({ source => $source, from_address => $email })
+## get_flow (organization => $org, flow => $flow)
+
+Get a single flow. Single flow information always includes user list of flow. Otherwise the data format is identical to the list.
+
+## get_flows
+
+Lists the flows that the authenticated user has access to.
+
+## send_message (organization => $org, flow => $flow, event => $event, content => $content, tags => $tags)
+
+Send a messge to a flow.
+
+- event
+
+One of the valid Flowdock message events. Determines the type of message being sent to Flowdock. See Message Types section below. Required.
+
+- content
+
+The actual message. The format of content depends on the event. Required. Types are message (normal chat), status, (status update), mail (team inbox).
+
+item tags
+
+List of tags to be added to the message. Can be either an array (JSON only) or a string with tags delimited with commas. User tags should start with '@'. Hashtags can optionally be prefixed with "#". Tags are case insensitive.
+
+Some examples:
+
+A status update:
+
+    $client->send_message({
+        organization => 'iinteractive',
+        flow => 'testing',
+        event => 'status',
+        content => 'Away for a bit',
+    });
+
+A message in chat:
+
+    $client->send_message({
+        organization => 'iinteractive',
+        flow => 'testing',
+        event => 'message',
+        content => 'I am a robot',
+        tags => 'foo, bar'
+    });
+
+XXX Todo: mail
+
+## push_team_inbox ({ source => $source, from_address => $email })
 
 Required fields:
 
@@ -102,6 +164,26 @@ Example value: cool,stuff
 Link associated with the message. This will be used to link the message subject in Team Inbox.
 
 Example value: http://www.flowdock.com/
+
+## push_chat ({ content => $content, external_user_name => $username })
+
+- content
+
+Content of the message. Tags will be automatically parsed from the message content. Required.
+
+- external_user_name
+
+Name of the "user" sending the message. Required.
+
+- tags
+
+Tags of the message, separated by commas. Optional.
+
+Example value: cool,stuff
+
+# AUTHENTICATED
+
+# ANONYMOUS
 
 # AUTHOR
 
